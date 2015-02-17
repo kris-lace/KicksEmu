@@ -257,6 +257,9 @@ public class Shop {
     }
 
     public static void purchaseItem(Session session, ClientMessage msg) {
+
+        // TODO lace
+
         Payment payment = Payment.fromInt(msg.readByte());
         int price = msg.readInt();
         int itemId = msg.readInt();
