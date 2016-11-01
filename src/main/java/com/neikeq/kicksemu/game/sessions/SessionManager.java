@@ -26,11 +26,12 @@ public class SessionManager {
     }
     
     public static void removeSession(Channel channel) {
-        getSession(channel).ifPresent(Session::close);
+        Optional.ofNullable(getSession(channel))
+                .ifPresent(Session::close);
     }
 
-    public static Optional<Session> getSession(Channel channel) {
-        return Optional.ofNullable(channel.attr(SESSIONS_KEY).get());
+    public static Session getSession(Channel channel) {
+        return channel.attr(SESSIONS_KEY).get();
     }
 
     public static synchronized void generateSession(Session session) {
