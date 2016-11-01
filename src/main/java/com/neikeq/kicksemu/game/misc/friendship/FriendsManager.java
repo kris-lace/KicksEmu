@@ -7,8 +7,6 @@ import com.neikeq.kicksemu.network.packets.out.MessageBuilder;
 import com.neikeq.kicksemu.network.packets.out.ServerMessage;
 import com.neikeq.kicksemu.network.server.ServerManager;
 
-import java.util.Optional;
-
 public class FriendsManager {
 
     private static final int FRIENDS_LIST_LIMIT = 30;
