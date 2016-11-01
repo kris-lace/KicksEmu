@@ -4,8 +4,10 @@ import com.neikeq.kicksemu.game.inventory.types.Expiration;
 import com.neikeq.kicksemu.utils.table.Row;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BonusInfo {
 
@@ -27,13 +29,9 @@ public class BonusInfo {
     }
 
     private List<Integer> listFromStringArray(String[] strings) {
-        List<Integer> list = new ArrayList<>();
-
-        for (String str : strings) {
-            list.add(Integer.valueOf(str));
-        }
-
-        return list;
+        return Arrays.stream(strings)
+                     .map(Integer::valueOf)
+                     .collect(Collectors.toList());
     }
 
     public BonusInfo(Row row) throws ParseRowException {

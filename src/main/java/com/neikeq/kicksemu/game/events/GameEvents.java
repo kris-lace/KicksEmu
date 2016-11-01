@@ -13,6 +13,7 @@ import org.quartz.SchedulerException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,17 +162,13 @@ public class GameEvents {
     }
 
     private static int remainMinutesForNextSchedule(SortedSet<DayTimeRange> schedule, Calendar c) {
-        if (schedule != null) {
-            Date currentTime = c.getTime();
-            Optional<DayTimeRange> optional = schedule.stream()
-                    .filter(dayTimeRange -> dayTimeRange.isAfterRange(currentTime))
-                    .findFirst();
+        final Date time = c.getTime();
 
-            if (optional.isPresent()) {
-                return optional.get().minutesFrom(currentTime);
-            }
-        }
-
-        return -1;
+        return Optional.ofNullable(schedule)
+                       .map(Collection::stream)
+                       .map(s -> s.filter(dayTimeRange -> dayTimeRange.isAfterRange(time)).findFirst())
+                       .map(Optional::get)
+                       .map(range -> range.minutesFrom(time))
+                       .orElse(-1);
     }
 }

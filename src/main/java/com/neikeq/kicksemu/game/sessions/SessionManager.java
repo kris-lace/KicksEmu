@@ -11,6 +11,7 @@ import io.netty.util.AttributeKey;
 import java.net.InetSocketAddress;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Optional;
 
 public class SessionManager {
 
@@ -25,15 +26,11 @@ public class SessionManager {
     }
     
     public static void removeSession(Channel channel) {
-        Session session = getSession(channel);
-
-        if (session != null) {
-            session.close();
-        }
+        getSession(channel).ifPresent(Session::close);
     }
 
-    public static Session getSession(Channel channel) {
-        return channel.attr(SESSIONS_KEY).get();
+    public static Optional<Session> getSession(Channel channel) {
+        return Optional.ofNullable(channel.attr(SESSIONS_KEY).get());
     }
 
     public static synchronized void generateSession(Session session) {

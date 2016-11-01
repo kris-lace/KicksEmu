@@ -4,14 +4,21 @@ import com.neikeq.kicksemu.game.characters.CharacterUtils;
 import com.neikeq.kicksemu.game.characters.PlayerInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IgnoredList {
 
     private final List<Integer> ignoredPlayers = new ArrayList<>();
 
-    public void addPlayer(int playerId) {
-        ignoredPlayers.add(playerId);
+    public boolean addPlayer(int playerId) {
+        return ignoredPlayers.add(playerId);
+    }
+
+    public boolean addAllPlayers(Collection<Integer> players) {
+        return ignoredPlayers.addAll(players);
     }
 
     public void removePlayer(int playerId) {
@@ -31,25 +38,17 @@ public class IgnoredList {
     }
 
     public static IgnoredList fromString(String strPlayers, int id) {
+        final String[] playerArray = strPlayers.split(",");
+
         IgnoredList ignoredList = new IgnoredList();
 
-        boolean containsInvalidPlayer = false;
+        ignoredList.addAllPlayers(Arrays.stream(playerArray)
+                                        .filter(playerId -> !playerId.isEmpty())
+                                        .map(Integer::valueOf)
+                                        .filter(CharacterUtils::characterExist)
+                                        .collect(Collectors.toList()));
 
-        for (String playerId : strPlayers.split(",")) {
-            if (playerId.isEmpty()) {
-                break;
-            }
-
-            int player = Integer.valueOf(playerId);
-
-            if (CharacterUtils.characterExist(player)) {
-                ignoredList.addPlayer(player);
-            } else {
-                containsInvalidPlayer = true;
-            }
-        }
-
-        if (containsInvalidPlayer) {
+        if (ignoredList.size() > playerArray.length) {
             PlayerInfo.setIgnoredList(ignoredList, id);
         }
 
